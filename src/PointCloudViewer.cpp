@@ -18,7 +18,10 @@ void PointCloudViewerDrawCallback(void* param){
 PointCloudViewer::PointCloudViewer(std::string windowName, cv::Size frameSize)
   : m_isTextureInitialized(false)
   , m_windowName(windowName)
-  , size(frameSize){
+  , size(frameSize)
+  , translate_(false)
+  , rotate_(false){
+    angle=0;
     // Create window with OpenGL support
     cv::namedWindow(windowName, CV_WINDOW_OPENGL);
     // Resize it exactly to video size
@@ -34,6 +37,21 @@ PointCloudViewer::~PointCloudViewer(){
 
 void PointCloudViewer::updatePointCloud(const Point3Cloud &cloud){
     m_pointCloud = Point3Cloud(cloud);
+}
+
+void PointCloudViewer::translate(float x, float y, float z){
+    translations[0]+=x;
+    translations[1]+=y;
+    translations[2]+=z;
+    translate_=true;
+}
+
+void PointCloudViewer::rotate(float _angle, float x, float y, float z){
+    rotation[0]=x;
+    rotation[1]=y;
+    rotation[2]=z;
+    angle+=_angle;
+    rotate_=true;
 }
 
 void PointCloudViewer::updateWindow(){
@@ -85,10 +103,10 @@ void PointCloudViewer::drawPointCloud(){
                     (float)size.width/size.height,
                     znear,
                     zfar // same
-                    );
+                  );
 
     cv::Vec3f cameraTarget = m_pointCloud.bBCenter;
-    cv::Vec3f cameraPosition = cameraTarget + cv::Vec3f(m_pointCloud.bBDistance,0,m_pointCloud.bBDistance);
+    cv::Vec3f cameraPosition = cameraTarget + cv::Vec3f(m_pointCloud.bBDistance,m_pointCloud.bBDistance,0);
 
     gluLookAt(
         cameraPosition[0], cameraPosition[1], cameraPosition[2],
@@ -111,7 +129,7 @@ void PointCloudViewer::drawPointCloud(){
         for( int j=0 ; j<points.cols; j++ ){
             //if(color_on){
                 cv::Vec3b bgrPixel = bgr.at<Vec3b>(i,j);
-                glColor3b(bgrPixel[2],bgrPixel[1],bgrPixel[0]);
+                glColor3b(bgrPixel[0],bgrPixel[1],bgrPixel[2]);
             //}
             cv::Vec3f theP = points.at<Vec3f>(i,j);
             glVertex3f(theP[0],theP[1],theP[2]);
@@ -148,6 +166,15 @@ void PointCloudViewer::drawPointCloud(){
     //activate the first light
     glEnable(GL_LIGHT0);
     //////
+
+    if (translate_){
+        glTranslatef(translations[0],translations[1],translations[2]);
+        translate_=false;
+    }
+    if (rotate_){
+        glRotatef(angle, rotation[0],rotation[1],rotation[2]);
+        rotate_=false;
+    }
 }
 
 }//mcv

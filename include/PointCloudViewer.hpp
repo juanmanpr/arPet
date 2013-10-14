@@ -22,6 +22,8 @@ public:
 
     void updatePointCloud(const mcv::Point3Cloud& cloud);
     void updateWindow();
+    void translate(float x, float y, float z);
+    void rotate(float angle, float x, float y, float z);
 
 private:
     friend void PointCloudViewerDrawCallback(void* param);
@@ -38,6 +40,11 @@ private:
     mcv::Point3Cloud m_pointCloud;
     std::string m_windowName;
     cv::Size size;
+    cv::Vec3f translations;
+    cv::Vec3f rotation;
+    float angle;
+    bool translate_;
+    bool rotate_;
 };
 }// mcv
 #endif

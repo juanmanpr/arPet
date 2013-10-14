@@ -52,21 +52,64 @@ int main( int argc, char * argv[] ){
 
     mcv::Point3Cloud mypc;
     mcv::PointCloudViewer view("MCV AR", cv::Size(640,480));
-    if (argc>1) mypc.readFrame(argv[1]);
+    VideoCapture capture( CV_CAP_OPENNI );
 
-    cv::Mat color;
-    mypc.getBgr(color);
-    view.updatePointCloud(mypc);
-    cv::imshow("TEST",color);
-
-    bool loop=true;
-    if (argc>1){
+    //if (argc>1) mypc.readFrame(argv[1]);
+    if (capture.isOpened()){
+        capture.set( CV_CAP_OPENNI_IMAGE_GENERATOR_OUTPUT_MODE, CV_CAP_OPENNI_VGA_30HZ );
+        bool loop=true;
         while (loop){
+            mypc.grabFrame(capture);
 
+            cv::Mat color;
+            mypc.getBgr(color);
+            view.updatePointCloud(mypc);
+            cv::imshow("TEST",color);
             view.updateWindow();
-            int key = cv::waitKey(30);
 
-            if (key=='q')
+            int key = cv::waitKey(30);
+            if (key>0) cout<<"KEY: "<<key<<endl;
+
+            switch (key){
+            case 65362:
+                view.translate(mypc.bBDistance/20, 0, 0);
+                break;
+            case 65361:
+                view.translate(0, 0, mypc.bBDistance/20);
+                break;
+            case 65364:
+                view.translate(-mypc.bBDistance/20, 0, 0);
+                break;
+            case 65363:
+                view.translate(0, 0, -mypc.bBDistance/20);
+                break;
+            case 'w':
+                view.translate(0, mypc.bBDistance/20, 0);
+                break;
+            case 's':
+                view.translate(0, -mypc.bBDistance/20, 0);
+                break;
+            case 'q':
+                view.rotate(0.1, 1,0,0);
+                break;
+            case 'e':
+                view.rotate(-0.1, 1,0,0);
+                break;
+            case 'z':
+                view.rotate(0.1, 0,1,0);
+                break;
+            case 'c':
+                view.rotate(-0.1, 0,1,0);
+                break;
+            case 'r':
+                view.rotate(0.1, 0,0,1);
+                break;
+            case 'f':
+                view.rotate(-0.1, 0,0,1);
+                break;
+            }
+
+            if (key==27)
                 break;
         }
     }
