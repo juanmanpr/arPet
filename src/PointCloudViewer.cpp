@@ -40,9 +40,9 @@ void PointCloudViewer::updatePointCloud(const Point3Cloud &cloud){
 }
 
 void PointCloudViewer::translate(float x, float y, float z){
-    translations[0]+=x;
-    translations[1]+=y;
-    translations[2]+=z;
+    translations[0]=x;
+    translations[1]=y;
+    translations[2]=z;
     translate_=true;
 }
 
@@ -50,7 +50,7 @@ void PointCloudViewer::rotate(float _angle, float x, float y, float z){
     rotation[0]=x;
     rotation[1]=y;
     rotation[2]=z;
-    angle+=_angle;
+    angle=_angle;
     rotate_=true;
 }
 
