@@ -129,7 +129,7 @@ void PointCloudViewer::drawPointCloud(){
         for( int j=0 ; j<points.cols; j++ ){
             //if(color_on){
                 cv::Vec3b bgrPixel = bgr.at<Vec3b>(i,j);
-                glColor3b(bgrPixel[0],bgrPixel[1],bgrPixel[2]);
+                glColor3b(bgrPixel[2],bgrPixel[1],bgrPixel[0]);
             //}
             cv::Vec3f theP = points.at<Vec3f>(i,j);
             glVertex3f(theP[0],theP[1],theP[2]);
