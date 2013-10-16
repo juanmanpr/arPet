@@ -60,6 +60,9 @@ int main( int argc, char * argv[] ){
         VideoCapture capture( CV_CAP_OPENNI );
         if (capture.isOpened()){
             capture.set( CV_CAP_OPENNI_IMAGE_GENERATOR_OUTPUT_MODE, CV_CAP_OPENNI_VGA_30HZ );
+            cout<<"Registration: "<<capture.get( CV_CAP_PROP_OPENNI_REGISTRATION )<<endl;
+            capture.set( CV_CAP_OPENNI_DEPTH_GENERATOR_REGISTRATION, CV_CAP_PROP_OPENNI_REGISTRATION_ON );
+            cout<<"Registration: "<<capture.get( CV_CAP_PROP_OPENNI_REGISTRATION )<<endl;
             mypc.grabFrame(capture);
         }else{
             cout<<"ERROR, NO FILE GIVEN AND NO 3D CAMERA CONNECTED"<<endl;
@@ -76,48 +79,48 @@ int main( int argc, char * argv[] ){
         view.updateWindow();
 
         int key = cv::waitKey(30);
-        if (key>0) cout<<"KEY: "<<key<<endl;
-
+        //if (key>0) cout<<"KEY: "<<key<<endl;
+        const float speed = 0.25;
         switch (key){
         case 's':
         case 65362:
-            view.translate(0.1, 0, 0);
+            view.translate(speed, 0, 0);
             break;
         case 65361:
         case 'a':
-            view.translate(0, 0, 0.1);
+            view.translate(0, 0, speed);
             break;
         case 65364:
         case 'w':
-            view.translate(-0.1, 0, 0);
+            view.translate(-speed, 0, 0);
             break;
         case 65363:
         case 'd':
-            view.translate(0, 0, -0.1);
+            view.translate(0, 0, -speed);
             break;
         case 't':
-            view.translate(0, 0.1, 0);
+            view.translate(0, speed, 0);
             break;
         case 'y':
-            view.translate(0, -0.1, 0);
+            view.translate(0, -speed, 0);
             break;
         case 'q':
-            view.rotate(0.1, 1,0,0);
+            view.rotate(speed, 1,0,0);
             break;
         case 'e':
-            view.rotate(-0.1, 1,0,0);
+            view.rotate(-speed, 1,0,0);
             break;
         case 'z':
-            view.rotate(0.1, 0,1,0);
+            view.rotate(speed, 0,1,0);
             break;
         case 'c':
-            view.rotate(-0.1, 0,1,0);
+            view.rotate(-speed, 0,1,0);
             break;
         case 'r':
-            view.rotate(0.1, 0,0,1);
+            view.rotate(speed, 0,0,1);
             break;
         case 'f':
-            view.rotate(-0.1, 0,0,1);
+            view.rotate(-speed, 0,0,1);
             break;
         }
 
